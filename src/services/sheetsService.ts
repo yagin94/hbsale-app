@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbzJiH_Um5Q_UttwmsH-P8Ma3e3oJEAIerSJvBGSo76YZEo-4DckDgkme43Q7dkYJBDbsA/exec'
-
+const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbztuuZ8PQNbdjs6OJwI_iEbglIxr2o7-YiUVjqWG3uwwy5a0zAuXDlUwBQwDVG0JcZvyA/exec'
 export interface Order {
   id: string
   customerName: string
@@ -26,17 +25,21 @@ export const sheetsService = {
     }
   },
 
-  async addOrder(order: Omit<Order, 'id'>): Promise<void> {
-    try {
-      await axios.post(SHEETS_API_URL, {
-        action: 'addOrder',
-        data: order
-      })
-    } catch (error) {
-      console.error('Error adding order:', error)
-      throw error
-    }
-  },
+async addOrder(order: Omit<Order, 'id'>): Promise<void> {
+  try {
+    await axios.post(SHEETS_API_URL, {
+      action: 'addOrder',
+      data: order
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    console.error('Error adding order:', error);
+    throw error;
+  }
+},
 
   async updateOrderStatus(orderId: string, isFulfilled: boolean): Promise<void> {
     try {

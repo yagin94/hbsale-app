@@ -1,26 +1,26 @@
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-md">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold">Orders</h2>
+  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-extrabold text-indigo-700">Orders</h2>
       <div class="flex items-center space-x-4">
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Search by customer name..."
-          class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          class="rounded-lg border-gray-300 shadow focus:border-indigo-400 focus:ring-indigo-400 px-4 py-2 bg-indigo-50 placeholder-indigo-300"
         />
-        <div class="text-lg font-semibold">
+        <div class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg shadow-sm">
           Total Revenue: {{ formatCurrency(totalRevenue) }}
         </div>
-        <div class="text-lg font-semibold">
+        <div class="text-lg font-semibold bg-pink-100 text-pink-700 px-3 py-1 rounded-lg shadow-sm">
           Total Profit: {{ formatCurrency(totalProfit) }}
         </div>
       </div>
     </div>
     
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md bg-white">
+        <thead class="bg-indigo-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Customer
@@ -46,7 +46,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-gray-50">
+          <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-indigo-50 transition">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">{{ order.customerName }}</div>
               <div class="text-sm text-gray-500">{{ order.facebookLink }}</div>
@@ -85,7 +85,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { sheetsService, Order } from '../services/sheetsService'
+import { sheetsService } from '../services/sheetsService'
+import type { Order } from '../services/sheetsService'
 
 const orders = ref<Order[]>([])
 const searchQuery = ref('')

@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold mb-4">Add New Order</h2>
-    <form @submit.prevent="submitOrder" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 transition hover:shadow-2xl">
+    <h2 class="text-2xl font-extrabold mb-6 text-indigo-700">Add New Order</h2>
+    <form @submit.prevent="submitOrder" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-medium text-gray-700">Customer Name</label>
           <input
@@ -86,7 +86,7 @@
       </div>
       <button
         type="submit"
-        class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition"
       >
         Add Order
       </button>
@@ -98,7 +98,19 @@
 import { ref } from 'vue'
 import { sheetsService } from '../services/sheetsService'
 
-const formData = ref({
+interface OrderFormData {
+  customerName: string;
+  facebookLink: string;
+  address: string;
+  product: string;
+  size: string;
+  color: string;
+  sellingPrice: number;
+  costPrice: number;
+  isFulfilled: boolean;
+}
+
+const initialFormData: OrderFormData = {
   customerName: '',
   facebookLink: '',
   address: '',
@@ -108,21 +120,19 @@ const formData = ref({
   sellingPrice: 0,
   costPrice: 0,
   isFulfilled: false
-})
+}
+
+const formData = ref<OrderFormData>({ ...initialFormData })
+
+const resetForm = () => {
+  formData.value = { ...initialFormData }
+}
 
 const submitOrder = async () => {
   try {
     await sheetsService.addOrder(formData.value)
     // Reset form
-    Object.keys(formData.value).forEach(key => {
-      if (typeof formData.value[key] === 'boolean') {
-        formData.value[key] = false
-      } else if (typeof formData.value[key] === 'number') {
-        formData.value[key] = 0
-      } else {
-        formData.value[key] = ''
-      }
-    })
+    resetForm()
     alert('Order added successfully!')
   } catch (error) {
     console.error('Error adding order:', error)
