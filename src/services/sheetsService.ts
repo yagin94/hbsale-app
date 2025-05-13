@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbztuuZ8PQNbdjs6OJwI_iEbglIxr2o7-YiUVjqWG3uwwy5a0zAuXDlUwBQwDVG0JcZvyA/exec'
+const API_URL = 'http://localhost:3000/api'
+
 export interface Order {
   id: string
   customerName: string
@@ -17,7 +18,7 @@ export interface Order {
 export const sheetsService = {
   async getOrders(): Promise<Order[]> {
     try {
-      const response = await axios.get(`${SHEETS_API_URL}?action=getOrders`)
+      const response = await axios.get(`${API_URL}/orders`)
       return response.data
     } catch (error) {
       console.error('Error fetching orders:', error)
@@ -25,32 +26,29 @@ export const sheetsService = {
     }
   },
 
-async addOrder(order: Omit<Order, 'id'>): Promise<void> {
-  try {
-    await axios.post(SHEETS_API_URL, {
-      action: 'addOrder',
-      data: order
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  } catch (error) {
-    console.error('Error adding order:', error);
-    throw error;
-  }
-},
+  async addOrder(order: Omit<Order, 'id'>): Promise<void> {
+    try {
+      await axios.post(`${API_URL}/orders`, order)
+    } catch (error) {
+      console.error('Error adding order:', error)
+      throw error
+    }
+  },
 
   async updateOrderStatus(orderId: string, isFulfilled: boolean): Promise<void> {
     try {
-      await axios.put(SHEETS_API_URL, {
-        action: 'updateOrderStatus',
-        orderId,
-        isFulfilled
-      })
+      await axios.put(`${API_URL}/orders/${orderId}/status`, { isFulfilled })
     } catch (error) {
       console.error('Error updating order status:', error)
       throw error
     }
-  }
-} 
+  },
+  async deleteOrder(orderId: string): Promise<void> {
+    try {
+      await axios.delete(`${API_URL}/orders/${orderId}`)
+    } catch (error) {
+      console.error('Error deleting order:', error)
+      throw error
+    }
+  },
+}
