@@ -9,39 +9,72 @@
           placeholder="Search by customer name..."
           class="rounded-lg border-gray-300 shadow focus:border-indigo-400 focus:ring-indigo-400 px-4 py-2 bg-indigo-50 placeholder-indigo-300"
         />
-        <div class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg shadow-sm">
-          Total Revenue: {{ formatCurrency(totalRevenue) }}
+        <div
+          class="text-lg font-semibold bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg shadow-sm"
+        >
+          Tổng doanh thu: {{ formatCurrency(totalRevenue) }}
         </div>
         <div class="text-lg font-semibold bg-pink-100 text-pink-700 px-3 py-1 rounded-lg shadow-sm">
-          Total Profit: {{ formatCurrency(totalProfit) }}
+          Tổng lời: {{ formatCurrency(totalProfit) }}
         </div>
       </div>
     </div>
-    
+
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md bg-white">
+      <table
+        class="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md bg-white"
+      >
         <thead class="bg-indigo-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Customer
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Khách hàng
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Product
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Facebook Link
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Size/Color
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Địa chỉ
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Selling Price
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Sản phẩm
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Cost Price
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Size
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Profit
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Màu
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Status
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Giá bán
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Giá nhập
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Chênh lệch
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Đi đơn
             </th>
           </tr>
         </thead>
@@ -49,13 +82,23 @@
           <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-indigo-50 transition">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">{{ order.customerName }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-500">{{ order.facebookLink }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.product }}</div>
+              <div class="text-sm text-gray-900">{{ order.address }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.size }} / {{ order.color }}</div>
+              <div class="mt-2 flex items-center justify-center">
+                <img :src="order.product" class="w-[64px] h-[64px] object-cover rounded" />
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ order.size }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ order.color }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">{{ formatCurrency(order.sellingPrice) }}</div>
@@ -104,7 +147,7 @@ const fetchOrders = async () => {
 // Filter orders based on search query
 const filteredOrders = computed(() => {
   if (!searchQuery.value) return orders.value
-  return orders.value.filter(order =>
+  return orders.value.filter((order) =>
     order.customerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
@@ -130,7 +173,7 @@ const getProfitClass = (order: Order) => {
   return {
     'text-green-600': profit > 0,
     'text-red-600': profit < 0,
-    'text-gray-600': profit === 0
+    'text-gray-600': profit === 0,
   }
 }
 
@@ -148,7 +191,7 @@ const updateOrderStatus = async (order: Order) => {
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'VND'
+    currency: 'VND',
   }).format(value)
 }
 
