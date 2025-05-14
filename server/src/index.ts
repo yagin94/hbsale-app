@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import qs from 'qs';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -12,9 +15,23 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Google Sheets API URL
-const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycbwxaxezX0avDxPsWsS5cxiKs8jzr9KHIC7eBIK7vq86Vd3u9KINgEAQ-PV7F2KPF4hYnQ/exec';
+const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycbyH4cyWe1w-Is7eOHo0J5BzAFDFuiVD5GnH1XB9_HXVQCLYrchb1Ne342aa6vCXDnBN5g/exec';
+
+// Product file path
+const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'public', 'products.txt');
+
+// Ensure the products file exists and directory exists
+const productsDir = path.dirname(PRODUCTS_FILE_PATH);
+if (!fs.existsSync(productsDir)) {
+  fs.mkdirSync(productsDir, { recursive: true });
+}
+if (!fs.existsSync(PRODUCTS_FILE_PATH)) {
+  fs.writeFileSync(PRODUCTS_FILE_PATH, '[]');
+}
+
 // Types
 interface Order {
   id: string;
@@ -73,10 +90,26 @@ app.put('/api/orders/:orderId/status', async (req, res) => {
   }
 });
 
+app.put('/api/orders/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const order = req.body;
+    await axios.put(SHEETS_API_URL, {
+      action: 'updateOrder',
+      orderId,
+      data: JSON.stringify(order),
+    });
+    res.json({ message: 'Order updated successfully' });
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
+
 app.delete('/api/orders/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
-    await axios.delete(SHEETS_API_URL, {
+    await axios.post(SHEETS_API_URL, {
       data: {
         action: 'deleteOrder',
         orderId,
@@ -86,6 +119,68 @@ app.delete('/api/orders/:orderId', async (req, res) => {
   } catch (error) {
     console.error('Error deleting order:', error);
     res.status(500).json({ error: 'Failed to delete order' });
+  }
+});
+
+// Product endpoints
+app.get('/api/products', (req, res) => {
+  try {
+    if (!fs.existsSync(PRODUCTS_FILE_PATH)) {
+      fs.writeFileSync(PRODUCTS_FILE_PATH, '[]');
+    }
+    const productsData = fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8');
+    res.json(JSON.parse(productsData));
+  } catch (error: any) {
+    console.error('Error reading products:', error);
+    res.status(500).json({ error: 'Failed to read products', details: error?.message || 'Unknown error' });
+  }
+});
+
+app.post('/api/products', (req, res) => {
+  try {
+    const products = JSON.parse(fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8'));
+    const newProduct = {
+      ...req.body,
+      id: crypto.randomUUID()
+    };
+    products.push(newProduct);
+    fs.writeFileSync(PRODUCTS_FILE_PATH, JSON.stringify(products, null, 2));
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({ error: 'Failed to add product' });
+  }
+});
+
+app.put('/api/products/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const products = JSON.parse(fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8'));
+    const index = products.findIndex((p: any) => p.id === id);
+    
+    if (index === -1) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    products[index] = { ...req.body, id };
+    fs.writeFileSync(PRODUCTS_FILE_PATH, JSON.stringify(products, null, 2));
+    res.json(products[index]);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+
+app.delete('/api/products/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const products = JSON.parse(fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8'));
+    const filteredProducts = products.filter((p: any) => p.id !== id);
+    fs.writeFileSync(PRODUCTS_FILE_PATH, JSON.stringify(filteredProducts, null, 2));
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 

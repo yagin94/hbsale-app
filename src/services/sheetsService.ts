@@ -8,6 +8,7 @@ export interface Order {
   facebookLink: string
   address: string
   product: string
+  imagePath: string
   size: string
   color: string
   sellingPrice: number
@@ -43,6 +44,16 @@ export const sheetsService = {
       throw error
     }
   },
+
+  async updateOrder(order: Order): Promise<void> {
+    try {
+      await axios.put(`${API_URL}/orders/${order.id}`, order)
+    } catch (error) {
+      console.error('Error updating order:', error)
+      throw error
+    }
+  },
+
   async deleteOrder(orderId: string): Promise<void> {
     try {
       await axios.delete(`${API_URL}/orders/${orderId}`)

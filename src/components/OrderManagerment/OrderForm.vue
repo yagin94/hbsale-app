@@ -1,0 +1,167 @@
+<template>
+  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 transition hover:shadow-2xl">
+    <h2 class="text-2xl font-extrabold mb-6 text-indigo-700">Nhập đơn mới</h2>
+    <form @submit.prevent="submitOrder" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Tên khách hàng</label>
+          <input v-model="formData.customerName" type="text" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Facebook Link</label>
+          <input v-model="formData.facebookLink" type="url" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Địa chỉ</label>
+          <input v-model="formData.address" type="text" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">SĐT</label>
+          <input v-model="formData.phone" type="text" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Sản Phẩm</label>
+          <select v-model="selectedProduct" @change="handleProductChange" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <option value="">Select a product</option>
+            <option v-for="product in products" :key="product.id" :value="product">
+              {{ product.productName }}
+            </option>
+          </select>
+          <div v-if="selectedProduct?.imagePath" class="mt-2 flex items-center justify-center">
+            <img :src="selectedProduct.imagePath" class="w-[64px] h-[64px] object-cover rounded" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Size</label>
+          <select v-model="formData.size" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <option value="">Select a size</option>
+            <option v-for="size in availableSizes" :key="size" :value="size">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Màu</label>
+          <select v-model="formData.color" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <option value="">Select a color</option>
+            <option v-for="color in availableColors" :key="color" :value="color">
+              {{ color }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Giá bán</label>
+          <input v-model="formData.sellingPrice" type="number" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Giá nhập</label>
+          <input v-model="formData.costPrice" type="number" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+      </div>
+      <div class="flex items-center">
+        <input v-model="formData.isFulfilled" type="checkbox"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+        <label class="ml-2 block text-sm text-gray-900">Đi đơn</label>
+      </div>
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition">
+        Add Order
+      </button>
+    </form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+import { sheetsService } from '@/services/sheetsService'
+import { productService, type Product } from '@/services/productService'
+
+interface OrderFormData {
+  customerName: string
+  facebookLink: string
+  address: string
+  phone: string
+  product: string
+  size: string
+  color: string
+  sellingPrice: number
+  costPrice: number
+  isFulfilled: boolean
+  imagePath: string
+}
+
+const initialFormData: OrderFormData = {
+  customerName: '',
+  facebookLink: '',
+  address: '',
+  phone: '',
+  product: '',
+  size: '',
+  color: '',
+  sellingPrice: 0,
+  costPrice: 0,
+  isFulfilled: false,
+  imagePath: ''
+}
+
+const formData = ref<OrderFormData>({ ...initialFormData })
+const products = ref<Product[]>([])
+const selectedProduct = ref<Product | null>(null)
+
+const availableSizes = computed(() => {
+  return selectedProduct.value?.size || []
+})
+
+const availableColors = computed(() => {
+  return selectedProduct.value?.color || []
+})
+
+const loadProducts = async () => {
+  try {
+    products.value = await productService.getProducts()
+  } catch (error) {
+    console.error('Error loading products:', error)
+    alert('Failed to load products. Please try again.')
+  }
+}
+
+const handleProductChange = () => {
+  if (selectedProduct.value) {
+    formData.value.product = selectedProduct.value.productName
+    formData.value.imagePath = selectedProduct.value.imagePath
+    // Reset size and color when product changes
+    formData.value.size = ''
+    formData.value.color = ''
+  }
+}
+
+const resetForm = () => {
+  formData.value = { ...initialFormData }
+  selectedProduct.value = null
+}
+
+const submitOrder = async () => {
+  try {
+    await sheetsService.addOrder(formData.value)
+    resetForm()
+    alert('Order added successfully!')
+    window.location.reload()
+  } catch (error) {
+    console.error('Error adding order:', error)
+    alert('Failed to add order. Please try again.')
+  }
+}
+
+onMounted(() => {
+  loadProducts()
+})
+</script>

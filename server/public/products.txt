@@ -1,0 +1,31 @@
+[
+  {
+    "productName": "yagin",
+    "imagePath": "/images/59571221ea303c6e6521.jpg",
+    "size": [
+      "66",
+      "88",
+      "73"
+    ],
+    "color": [
+      "red",
+      "blue"
+    ],
+    "id": "a597829d-4b30-4208-bc2d-1bba110c3e2e"
+  },
+  {
+    "productName": "bộ vit donan",
+    "imagePath": "/images/59571221ea303c6e6521.jpg",
+    "size": [
+      "66",
+      "73",
+      "88"
+    ],
+    "color": [
+      "đỏ",
+      "tím",
+      "nau tràm"
+    ],
+    "id": "a51cc987-8555-4d19-8d1b-8df89f059ef1"
+  }
+]
