@@ -1,10 +1,10 @@
 <template>
   <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 transition hover:shadow-2xl">
-    <h2 class="text-2xl font-extrabold mb-6 text-indigo-700">Nhập đơn mới</h2>
+    <h2 class="text-2xl font-extrabold mb-6 text-indigo-700">Add new order</h2>
     <form @submit.prevent="submitOrder" class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Tên khách hàng</label>
+          <label class="block text-sm font-medium text-gray-700">Customer name</label>
           <input v-model="formData.customerName" type="text" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
@@ -14,17 +14,17 @@
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Địa chỉ</label>
+          <label class="block text-sm font-medium text-gray-700">Address</label>
           <input v-model="formData.address" type="text" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">SĐT</label>
+          <label class="block text-sm font-medium text-gray-700">Phone</label>
           <input v-model="formData.phone" type="text" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Sản Phẩm</label>
+          <label class="block text-sm font-medium text-gray-700">Product</label>
           <select v-model="selectedProduct" @change="handleProductChange" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a product</option>
@@ -47,7 +47,7 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Màu</label>
+          <label class="block text-sm font-medium text-gray-700">Color</label>
           <select v-model="formData.color" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a color</option>
@@ -57,12 +57,12 @@
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Giá bán</label>
+          <label class="block text-sm font-medium text-gray-700">Selling price</label>
           <input v-model="formData.sellingPrice" type="number" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Giá nhập</label>
+          <label class="block text-sm font-medium text-gray-700">Cost price</label>
           <input v-model="formData.costPrice" type="number" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
@@ -70,7 +70,7 @@
       <div class="flex items-center">
         <input v-model="formData.isFulfilled" type="checkbox"
           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
-        <label class="ml-2 block text-sm text-gray-900">Đi đơn</label>
+        <label class="ml-2 block text-sm text-gray-900">Fullfilled</label>
       </div>
       <button type="submit"
         class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition">
