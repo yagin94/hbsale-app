@@ -7,4 +7,21 @@ button {
   cursor: pointer;
 }
 
+.redirect-fb:hover {
+  color: blueviolet;
+}
+
+/* input,
+select {
+  font-family: "DIN Alternate", sans-serif;
+  font-size: larger;
+  height: 40px;
+  color: #615d5d;
+  border: 1px solid #f0e8e8;
+  border-radius: 5px;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  outline: none;
+} */
+
 @import "tailwindcss";

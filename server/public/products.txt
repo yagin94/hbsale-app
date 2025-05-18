@@ -1,31 +1,16 @@
 [
   {
-    "productName": "yagin",
-    "imagePath": "/images/59571221ea303c6e6521.jpg",
+    "productName": "Rồng Vàng ",
+    "imagePath": "/images/498314127_3980453475601692_3579983752120721134_n.jpg",
     "size": [
-      "66",
-      "88",
-      "73"
+      "66(5-7)",
+      "73(7-9kg)",
+      "80( 9-11kg)",
+      "90(11-13kg)"
     ],
     "color": [
-      "red",
-      "blue"
+      "vàng"
     ],
-    "id": "a597829d-4b30-4208-bc2d-1bba110c3e2e"
-  },
-  {
-    "productName": "bộ vit donan",
-    "imagePath": "/images/59571221ea303c6e6521.jpg",
-    "size": [
-      "66",
-      "73",
-      "88"
-    ],
-    "color": [
-      "đỏ",
-      "tím",
-      "nau tràm"
-    ],
-    "id": "a51cc987-8555-4d19-8d1b-8df89f059ef1"
+    "id": "bb0242fd-6864-4fed-a4cb-8bebabfeae9f"
   }
 ]

@@ -18,54 +18,165 @@
       <table class="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md bg-white">
         <thead class="bg-indigo-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Customer Name
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'customerName' }" @click="handleSort('customerName')">
+              <div class="flex items-center">
+                Customer Name
+                <span v-if="sortColumn === 'customerName'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Facebook Link
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'facebookLink' }" @click="handleSort('facebookLink')">
+              <div class="flex items-center">
+                Facebook Link
+                <span v-if="sortColumn === 'facebookLink'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Address
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'address' }" @click="handleSort('address')">
+              <div class="flex items-center">
+                Address
+                <span v-if="sortColumn === 'address'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Product
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'phone' }" @click="handleSort('phone')">
+              <div class="flex items-center">
+                Phone
+                <span v-if="sortColumn === 'phone'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              ImagePath
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'product' }" @click="handleSort('product')">
+              <div class="flex items-center">
+                Product
+                <span v-if="sortColumn === 'product'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Size
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'imagePath' }" @click="handleSort('imagePath')">
+              <div class="flex items-center">
+                Image
+                <span v-if="sortColumn === 'imagePath'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Color
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'size' }" @click="handleSort('size')">
+              <div class="flex items-center">
+                Size
+                <span v-if="sortColumn === 'size'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Selling Price
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'color' }" @click="handleSort('color')">
+              <div class="flex items-center">
+                Color
+                <span v-if="sortColumn === 'color'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Cost Price
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'sellingPrice' }" @click="handleSort('sellingPrice')">
+              <div class="flex items-center">
+                Selling Price
+                <span v-if="sortColumn === 'sellingPrice'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Profit
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'costPrice' }" @click="handleSort('costPrice')">
+              <div class="flex items-center">
+                Cost Price
+                <span v-if="sortColumn === 'costPrice'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Fulfilled
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'profit' }" @click="handleSort('profit')">
+              <div class="flex items-center">
+                Profit
+                <span v-if="sortColumn === 'profit'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'isFulfilled' }" @click="handleSort('isFulfilled')">
+              <div class="flex items-center">
+                Status
+                <span v-if="sortColumn === 'isFulfilled'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'isPaid' }" @click="handleSort('isPaid')">
+              <div class="flex items-center">
+                Paid
+                <span v-if="sortColumn === 'isPaid'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
+            </th>
+            <th scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
+              :class="{ 'bg-indigo-100': sortColumn === 'createdAt' }" @click="handleSort('createdAt')">
+              <div class="flex items-center">
+                Created At
+                <span v-if="sortColumn === 'createdAt'" class="ml-1">
+                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
+                </span>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="order in filteredOrders" :key="order.id" class="hover:bg-indigo-50 transition">
+          <tr v-for="order in sortedOrders" :key="order.id" class="hover:bg-indigo-50 transition">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">{{ order.customerName }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">{{ order.facebookLink }}</div>
+              <div class="text-sm text-gray-500"><a class="redirect-fb" :href="order.facebookLink" target="_blank"
+                  rel="noopener noreferrer">{{ order.facebookLink }}</a></div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">{{ order.address }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ order.phone }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm text-gray-900">{{ order.product }}</div>
@@ -95,6 +206,13 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <input type="checkbox" v-model="order.isFulfilled" @change="updateOrderStatus(order)"
                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <input type="checkbox" v-model="order.isPaid" @change="updateOrderPaid(order)"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ order.createdAt }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex space-x-2">
@@ -127,6 +245,8 @@ const orders = ref<Order[]>([])
 const searchQuery = ref('')
 const isEditModalOpen = ref(false)
 const selectedOrder = ref<Order | null>(null)
+const sortColumn = ref<string | null>(null)
+const sortDirection = ref<'asc' | 'desc'>('asc')
 
 const fetchOrders = async () => {
   try {
@@ -174,6 +294,15 @@ const updateOrderStatus = async (order: Order) => {
   }
 }
 
+const updateOrderPaid = async (order: Order) => {
+  try {
+    await sheetsService.updateOrderPaid(order.id, order.isFulfilled)
+  } catch (error) {
+    console.error('Error updating order:', error)
+    alert('Failed to update order paid. Please try again.')
+  }
+}
+
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -215,6 +344,56 @@ const handleEditSave = async (updatedOrder: Order) => {
     alert('Failed to update order. Please try again.')
   }
 }
+
+const handleSort = (column: string) => {
+  if (sortColumn.value === column) {
+    if (sortDirection.value === 'asc') {
+      sortDirection.value = 'desc'
+    } else {
+      // Reset sorting if clicking the same column again
+      sortColumn.value = null
+      sortDirection.value = 'asc'
+    }
+  } else {
+    sortColumn.value = column
+    sortDirection.value = 'asc'
+  }
+}
+
+const sortedOrders = computed(() => {
+  if (!sortColumn.value) return filteredOrders.value
+
+  return [...filteredOrders.value].sort((a, b) => {
+    let aValue = a[sortColumn.value as keyof Order]
+    let bValue = b[sortColumn.value as keyof Order]
+
+    // Handle profit calculation
+    if (sortColumn.value === 'profit') {
+      aValue = calculateProfit(a)
+      bValue = calculateProfit(b)
+    }
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection.value === 'asc'
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue)
+    }
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortDirection.value === 'asc'
+        ? aValue - bValue
+        : bValue - aValue
+    }
+
+    if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+      return sortDirection.value === 'asc'
+        ? (aValue === bValue ? 0 : aValue ? -1 : 1)
+        : (aValue === bValue ? 0 : aValue ? 1 : -1)
+    }
+
+    return 0
+  })
+})
 
 onMounted(() => {
   fetchOrders()

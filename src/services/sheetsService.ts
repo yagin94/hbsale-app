@@ -7,6 +7,7 @@ export interface Order {
   customerName: string
   facebookLink: string
   address: string
+  phone: string
   product: string
   imagePath: string
   size: string
@@ -14,6 +15,8 @@ export interface Order {
   sellingPrice: number
   costPrice: number
   isFulfilled: boolean
+  isPaid: boolean
+  createdAt?: Date
 }
 
 export const sheetsService = {
@@ -39,6 +42,15 @@ export const sheetsService = {
   async updateOrderStatus(orderId: string, isFulfilled: boolean): Promise<void> {
     try {
       await axios.put(`${API_URL}/orders/${orderId}/status`, { isFulfilled })
+    } catch (error) {
+      console.error('Error updating order status:', error)
+      throw error
+    }
+  },
+
+  async updateOrderPaid(orderId: string, isPaid: boolean): Promise<void> {
+    try {
+      await axios.put(`${API_URL}/orders/${orderId}/paid`, { isPaid })
     } catch (error) {
       console.error('Error updating order status:', error)
       throw error

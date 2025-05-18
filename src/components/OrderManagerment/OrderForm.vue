@@ -72,6 +72,13 @@
           class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
         <label class="ml-2 block text-sm text-gray-900">Fullfilled</label>
       </div>
+      <div class="flex items-center">
+        <input v-model="formData.isPaid" type="checkbox"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+        <label class="ml-2 block text-sm text-gray-900">
+          Paid
+        </label>
+      </div>
       <button type="submit"
         class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition">
         Add Order
@@ -96,6 +103,7 @@ interface OrderFormData {
   sellingPrice: number
   costPrice: number
   isFulfilled: boolean
+  isPaid: boolean
   imagePath: string
 }
 
@@ -110,6 +118,7 @@ const initialFormData: OrderFormData = {
   sellingPrice: 0,
   costPrice: 0,
   isFulfilled: false,
+  isPaid: false,
   imagePath: ''
 }
 

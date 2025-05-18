@@ -6,8 +6,8 @@ export interface Product {
   id: string
   productName: string
   imagePath: string
-  size: string[]
-  color: string[]
+  size: string[] | string
+  color: string[] | string
 }
 
 export const productService = {

@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../public')));
 
 // Google Sheets API URL
-const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycbyH4cyWe1w-Is7eOHo0J5BzAFDFuiVD5GnH1XB9_HXVQCLYrchb1Ne342aa6vCXDnBN5g/exec';
+const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycby5TvbRpHV9LbJ3LPIt-sPmKUyTIt3IoW7YXbmtToIWn5JFfkkN0ANzvAKpPfqRgQBKoQ/exec';
 
 // Product file path
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'public', 'products.txt');
@@ -30,20 +30,6 @@ if (!fs.existsSync(productsDir)) {
 }
 if (!fs.existsSync(PRODUCTS_FILE_PATH)) {
   fs.writeFileSync(PRODUCTS_FILE_PATH, '[]');
-}
-
-// Types
-interface Order {
-  id: string;
-  customerName: string;
-  facebookLink: string;
-  address: string;
-  product: string;
-  size: string;
-  color: string;
-  sellingPrice: number;
-  costPrice: number;
-  isFulfilled: boolean;
 }
 
 // Routes
@@ -78,33 +64,61 @@ app.put('/api/orders/:orderId/status', async (req, res) => {
   try {
     const { orderId } = req.params;
     const { isFulfilled } = req.body;
-    await axios.put(SHEETS_API_URL, {
-      action: 'updateOrderStatus',
-      orderId,
-      isFulfilled,
-    });
+
+    await axios.post(SHEETS_API_URL, null, {
+      params: {
+        action: 'updateOrderStatus',
+        data: JSON.stringify({ orderId, isFulfilled }),
+      },
+    }).catch(error => console.error('Error updating order status:', error.response?.data || error.message));
+
     res.json({ message: 'Order status updated successfully' });
   } catch (error) {
-    console.error('Error updating order status:', error);
     res.status(500).json({ error: 'Failed to update order status' });
   }
 });
 
+app.put('/api/orders/:orderId/paid', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { isPaid } = req.body;
+
+    await axios.post(SHEETS_API_URL, null, {
+      params: {
+        action: 'updatePaidStatus',
+        data: JSON.stringify({ orderId, isPaid })
+      }
+    }).catch(error => console.error('Error updating order status:', error.response?.data || error.message));
+
+    res.json({ message: 'Order paid updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update order status' });
+  }
+});
+
+
 app.put('/api/orders/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const order = req.body;
-    await axios.put(SHEETS_API_URL, {
-      action: 'updateOrder',
-      orderId,
-      data: JSON.stringify(order),
-    });
+    const order = { ...req.body, id: orderId };
+
+    await axios.post(SHEETS_API_URL, null, {
+      params: {
+        action: 'updateOrder',
+        data: JSON.stringify(order),
+      },
+    }).catch(error => {
+      console.error('Error updating order:', error.response?.data || error.message);
+      res.status(500).json({ error: 'Failed to update order', details: error.response?.data || error.message });
+    });;
+
     res.json({ message: 'Order updated successfully' });
   } catch (error) {
     console.error('Error updating order:', error);
     res.status(500).json({ error: 'Failed to update order' });
   }
 });
+
 
 app.delete('/api/orders/:orderId', async (req, res) => {
   try {
@@ -157,7 +171,7 @@ app.put('/api/products/:id', (req, res) => {
     const { id } = req.params;
     const products = JSON.parse(fs.readFileSync(PRODUCTS_FILE_PATH, 'utf-8'));
     const index = products.findIndex((p: any) => p.id === id);
-    
+
     if (index === -1) {
       return res.status(404).json({ error: 'Product not found' });
     }
