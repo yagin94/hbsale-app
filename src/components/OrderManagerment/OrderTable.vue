@@ -1,5 +1,13 @@
 <template>
-  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100">
+  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 relative">
+    <!-- Loading Overlay -->
+    <div v-if="isLoading" class="absolute inset-0 bg-white/80 flex items-center justify-center z-50">
+      <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <p class="mt-4 text-indigo-600 font-medium">Loading...</p>
+      </div>
+    </div>
+
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-extrabold text-indigo-700">Orders</h2>
       <div class="flex items-center space-x-4">
@@ -164,7 +172,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="order in sortedOrders" :key="order.id" class="hover:bg-indigo-50 transition">
+          <tr v-for="order in paginatedOrders" :key="order.id" class="hover:bg-indigo-50 transition">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="text-sm font-medium text-gray-900">{{ order.customerName }}</div>
             </td>
@@ -231,6 +239,59 @@
       </table>
     </div>
 
+    <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+      <div class="flex justify-between flex-1">
+        <div>
+          <p class="text-sm text-gray-700">
+            Showing
+            <span class="font-medium">{{ (currentPage - 1) * itemsPerPage + 1 }}</span>
+            to
+            <span class="font-medium">{{ Math.min(currentPage * itemsPerPage, filteredOrders.length) }}</span>
+            of
+            <span class="font-medium">{{ filteredOrders.length }}</span>
+            results
+          </p>
+        </div>
+        <div>
+          <nav class="inline-flex -space-x-px rounded-md shadow-sm isolate" aria-label="Pagination">
+            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+              class="relative inline-flex items-center px-2 py-2 text-gray-400 rounded-l-md border border-gray-300 bg-white text-sm font-medium hover:bg-gray-50">
+              <span class="sr-only">Previous</span>
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                aria-hidden="true">
+                <path fill-rule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+            <template v-for="(page, index) in paginationRange" :key="index">
+              <button v-if="typeof page === 'number'" @click="goToPage(page)" :class="[
+                currentPage === page
+                  ? 'relative z-10 inline-flex items-center px-4 py-2 border border-indigo-500 bg-indigo-50 text-sm font-medium text-indigo-600'
+                  : 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50'
+              ]">
+                {{ page }}
+              </button>
+              <span v-else
+                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                {{ page }}
+              </span>
+            </template>
+            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+              class="relative inline-flex items-center px-2 py-2 text-gray-400 rounded-r-md border border-gray-300 bg-white text-sm font-medium hover:bg-gray-50">
+              <span class="sr-only">Next</span>
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                aria-hidden="true">
+                <path fill-rule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clip-rule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+
     <EditOrderModal :is-open="isEditModalOpen" :order="selectedOrder" @close="closeEditModal" @save="handleEditSave" />
   </div>
 </template>
@@ -247,13 +308,19 @@ const isEditModalOpen = ref(false)
 const selectedOrder = ref<Order | null>(null)
 const sortColumn = ref<string | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('asc')
+const isLoading = ref(false)
+const currentPage = ref(1)
+const itemsPerPage = 5
 
 const fetchOrders = async () => {
+  isLoading.value = true
   try {
     orders.value = await sheetsService.getOrders()
   } catch (error) {
     console.error('Error fetching orders:', error)
     alert('Failed to fetch orders. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -286,20 +353,26 @@ const getProfitClass = (order: Order) => {
 }
 
 const updateOrderStatus = async (order: Order) => {
+  isLoading.value = true
   try {
     await sheetsService.updateOrderStatus(order.id, order.isFulfilled)
   } catch (error) {
     console.error('Error updating order:', error)
     alert('Failed to update order status. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 
 const updateOrderPaid = async (order: Order) => {
+  isLoading.value = true
   try {
     await sheetsService.updateOrderPaid(order.id, order.isFulfilled)
   } catch (error) {
     console.error('Error updating order:', error)
     alert('Failed to update order paid. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -313,6 +386,7 @@ const formatCurrency = (value: number) => {
 const deleteOrder = async (order: Order) => {
   if (!confirm('Are you sure you want to delete this order?')) return
 
+  isLoading.value = true
   try {
     await sheetsService.deleteOrder(order.id)
     await fetchOrders()
@@ -320,6 +394,8 @@ const deleteOrder = async (order: Order) => {
   } catch (error) {
     console.error('Error deleting order:', error)
     alert('Failed to delete order. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -334,6 +410,7 @@ const closeEditModal = () => {
 }
 
 const handleEditSave = async (updatedOrder: Order) => {
+  isLoading.value = true
   try {
     await sheetsService.updateOrder(updatedOrder)
     await fetchOrders()
@@ -342,6 +419,8 @@ const handleEditSave = async (updatedOrder: Order) => {
   } catch (error) {
     console.error('Error updating order:', error)
     alert('Failed to update order. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -360,40 +439,50 @@ const handleSort = (column: string) => {
   }
 }
 
-const sortedOrders = computed(() => {
-  if (!sortColumn.value) return filteredOrders.value
-
-  return [...filteredOrders.value].sort((a, b) => {
-    let aValue = a[sortColumn.value as keyof Order]
-    let bValue = b[sortColumn.value as keyof Order]
-
-    // Handle profit calculation
-    if (sortColumn.value === 'profit') {
-      aValue = calculateProfit(a)
-      bValue = calculateProfit(b)
-    }
-
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return sortDirection.value === 'asc'
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue)
-    }
-
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortDirection.value === 'asc'
-        ? aValue - bValue
-        : bValue - aValue
-    }
-
-    if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
-      return sortDirection.value === 'asc'
-        ? (aValue === bValue ? 0 : aValue ? -1 : 1)
-        : (aValue === bValue ? 0 : aValue ? 1 : -1)
-    }
-
-    return 0
-  })
+const paginatedOrders = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredOrders.value.slice(start, end)
 })
+
+const totalPages = computed(() => Math.ceil(filteredOrders.value.length / itemsPerPage))
+
+const paginationRange = computed(() => {
+  const delta = 3 // Number of pages to show before and after current page
+  const range: number[] = []
+  const rangeWithDots: (number | string)[] = []
+  let l: number | undefined
+
+  for (let i = 1; i <= totalPages.value; i++) {
+    if (
+      i === 1 ||
+      i === totalPages.value ||
+      (i >= currentPage.value - delta && i <= currentPage.value + delta)
+    ) {
+      range.push(i)
+    }
+  }
+
+  range.forEach(i => {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1)
+      } else if (i - l !== 1) {
+        rangeWithDots.push('...')
+      }
+    }
+    rangeWithDots.push(i)
+    l = i
+  })
+
+  return rangeWithDots
+})
+
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
 
 onMounted(() => {
   fetchOrders()

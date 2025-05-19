@@ -19,9 +19,20 @@
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700">Phone</label>
-          <input v-model="formData.phone" type="text" required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+          <label class="block text-sm font-medium text-gray-700">Số Điện Thoại</label>
+          <div class="relative">
+            <input v-model="formData.phone" type="text" required @input="handlePhoneInput"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+            <!-- Phone suggestions dropdown -->
+            <div v-if="showPhoneSuggestions && filteredUsers.length > 0"
+              class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
+              <div v-for="user in filteredUsers" :key="user.id" @click="selectUser(user)"
+                class="px-4 py-2 hover:bg-indigo-50 cursor-pointer">
+                <div class="font-medium">{{ user.customerName }}</div>
+                <div class="text-sm text-gray-500">{{ user.phone }}</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Product</label>
@@ -91,6 +102,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { sheetsService } from '@/services/sheetsService'
 import { productService, type Product } from '@/services/productService'
+import { userService, type User } from '../../services/userService'
 
 interface OrderFormData {
   customerName: string
@@ -125,6 +137,9 @@ const initialFormData: OrderFormData = {
 const formData = ref<OrderFormData>({ ...initialFormData })
 const products = ref<Product[]>([])
 const selectedProduct = ref<Product | null>(null)
+const users = ref<User[]>([])
+const showPhoneSuggestions = ref(false)
+const filteredUsers = ref<User[]>([])
 
 const availableSizes = computed(() => {
   return selectedProduct.value?.size || []
@@ -143,6 +158,14 @@ const loadProducts = async () => {
   }
 }
 
+const loadUsers = async () => {
+  try {
+    users.value = await userService.getUsers()
+  } catch (error) {
+    console.error('Error loading users:', error)
+  }
+}
+
 const handleProductChange = () => {
   if (selectedProduct.value) {
     formData.value.product = selectedProduct.value.productName
@@ -153,6 +176,25 @@ const handleProductChange = () => {
   }
 }
 
+const handlePhoneInput = () => {
+  if (formData.value.phone.length > 0) {
+    filteredUsers.value = users.value.filter(user =>
+      user.phone.toLowerCase().includes(formData.value.phone.toLowerCase())
+    )
+    showPhoneSuggestions.value = true
+  } else {
+    showPhoneSuggestions.value = false
+  }
+}
+
+const selectUser = (user: User) => {
+  formData.value.customerName = user.customerName
+  formData.value.phone = user.phone
+  formData.value.address = user.address
+  formData.value.facebookLink = user.facebookLink
+  showPhoneSuggestions.value = false
+}
+
 const resetForm = () => {
   formData.value = { ...initialFormData }
   selectedProduct.value = null
@@ -160,17 +202,28 @@ const resetForm = () => {
 
 const submitOrder = async () => {
   try {
+    // Save user information if it's a new user
+    if (!users.value.some(user => user.phone === formData.value.phone)) {
+      await userService.addUser({
+        customerName: formData.value.customerName,
+        phone: formData.value.phone,
+        address: formData.value.address,
+        facebookLink: formData.value.facebookLink
+      })
+    }
+
+    // Create the order
     await sheetsService.addOrder(formData.value)
     resetForm()
-    alert('Order added successfully!')
-    window.location.reload()
+    alert('Order created successfully!')
   } catch (error) {
-    console.error('Error adding order:', error)
-    alert('Failed to add order. Please try again.')
+    console.error('Error creating order:', error)
+    alert('Failed to create order')
   }
 }
 
 onMounted(() => {
   loadProducts()
+  loadUsers()
 })
 </script>

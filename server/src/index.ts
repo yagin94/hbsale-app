@@ -23,6 +23,9 @@ const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/
 // Product file path
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'public', 'products.txt');
 
+// User file path
+const USERS_FILE_PATH = path.join(process.cwd(), 'public', 'users.txt');
+
 // Ensure the products file exists and directory exists
 const productsDir = path.dirname(PRODUCTS_FILE_PATH);
 if (!fs.existsSync(productsDir)) {
@@ -30,6 +33,11 @@ if (!fs.existsSync(productsDir)) {
 }
 if (!fs.existsSync(PRODUCTS_FILE_PATH)) {
   fs.writeFileSync(PRODUCTS_FILE_PATH, '[]');
+}
+
+// Ensure users file exists
+if (!fs.existsSync(USERS_FILE_PATH)) {
+  fs.writeFileSync(USERS_FILE_PATH, JSON.stringify([]));
 }
 
 // Routes
@@ -195,6 +203,35 @@ app.delete('/api/products/:id', (req, res) => {
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
+
+// Get all users
+app.get('/api/users', (req, res) => {
+  try {
+    const data = fs.readFileSync(USERS_FILE_PATH, 'utf8');
+    const users = JSON.parse(data);
+    res.json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to read users', details: error?.message || 'Unknown error' });
+  }
+});
+
+// Add new user
+app.post('/api/users', (req, res) => {
+  try {
+    const data = fs.readFileSync(USERS_FILE_PATH, 'utf8');
+    const users = JSON.parse(data);
+    const newUser = {
+      id: crypto.randomUUID(),
+      ...req.body,
+      createdAt: new Date().toISOString()
+    };
+    users.push(newUser);
+    fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2));
+    res.json(newUser);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to add user', details: error?.message || 'Unknown error' });
   }
 });
 
