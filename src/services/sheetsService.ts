@@ -17,6 +17,7 @@ export interface Order {
   isFulfilled: boolean
   isPaid: boolean
   createdAt?: Date
+  note: string
 }
 
 export const sheetsService = {

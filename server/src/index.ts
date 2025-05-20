@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../public')));
 
 // Google Sheets API URL
-const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycby5TvbRpHV9LbJ3LPIt-sPmKUyTIt3IoW7YXbmtToIWn5JFfkkN0ANzvAKpPfqRgQBKoQ/exec';
+const SHEETS_API_URL = process.env.SHEETS_API_URL || 'https://script.google.com/macros/s/AKfycbw2Rk-Xnr7KySNmB_jnla-RZkOa1gpRnBD-jYTPt9mJ8jdq__GuxNfsF_LKx0-JRPL1mw/exec';
 
 // Product file path
 const PRODUCTS_FILE_PATH = path.join(process.cwd(), 'public', 'products.txt');
