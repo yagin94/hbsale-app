@@ -38,18 +38,28 @@
           Total Orders: {{ orders.length }}
         </div>
         <div
-          class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm"
+          class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-green-50"
+          @click="handleSort('isFulfilled')"
         >
           Fulfilled Orders: {{ orders.filter((order) => order.isFulfilled).length }}
         </div>
-        <div class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm">
+        <div
+          class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-green-50"
+          @click="handleSort('isPaid')"
+        >
           Paid Orders: {{ orders.filter((order) => order.isPaid).length }}
         </div>
-        <div class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm">
+        <div
+          class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-green-50"
+          @click="handleSort('customerName')"
+        >
           Total Customers:
           {{ Array.from(new Set(orders.map((order) => order.phone).filter(Boolean))).length }}
         </div>
-        <div class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm">
+        <div
+          class="text-lg font-semibold bg-green-100 text-green-500 px-3 py-1 rounded-lg shadow-sm cursor-pointer hover:bg-green-50"
+          @click="handleSort('note')"
+        >
           Special Orders: {{ orders.filter((order) => order.note.trim().length > 0).length }}
         </div>
       </div>
@@ -457,6 +467,7 @@ import { sheetsService } from '../../services/sheetsService'
 import type { Order } from '../../services/sheetsService'
 
 const orders = ref<Order[]>([])
+const ordersClone = ref<Order[]>([])
 const searchQuery = ref('')
 const isEditModalOpen = ref(false)
 const selectedOrder = ref<Order | null>(null)
@@ -470,6 +481,7 @@ const fetchOrders = async () => {
   isLoading.value = true
   try {
     orders.value = await sheetsService.getOrders()
+    ordersClone.value = await sheetsService.getOrders()
   } catch (error) {
     console.error('Error fetching orders:', error)
     alert('Failed to fetch orders. Please try again.')
@@ -486,7 +498,7 @@ const filteredOrders = computed(() => {
 })
 
 const totalRevenue = computed(() => {
-  return orders.value.reduce((sum, order) => sum + order.sellingPrice, 0)
+  return orders.value.reduce((sum, order) => sum + Number(order.sellingPrice), 0)
 })
 
 const totalProfit = computed(() => {
@@ -597,14 +609,17 @@ const handleSort = (column: string) => {
       // Reset sorting if clicking the same column again
       sortColumn.value = null
       sortDirection.value = 'asc'
+      // Refetch or reset orders to original order
+      orders.value = [...ordersClone.value]
+      return
     }
   } else {
     sortColumn.value = column
     sortDirection.value = 'asc'
   }
-  //add logic sort here
+  // Add logic sort here
   if (sortColumn.value) {
-    filteredOrders.value.sort((a, b) => {
+    orders.value = [...orders.value].sort((a, b) => {
       const aValue = a[sortColumn.value as keyof Order] ?? ''
       const bValue = b[sortColumn.value as keyof Order] ?? ''
       if (aValue < bValue) return sortDirection.value === 'asc' ? -1 : 1
