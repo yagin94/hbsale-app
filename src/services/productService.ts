@@ -5,9 +5,10 @@ const API_URL = 'http://localhost:3000/api'
 export interface Product {
   id: string
   productName: string
+  size: string[]
+  color: string[]
   imagePath: string
-  size: string[] | string
-  color: string[] | string
+  ordersCount: number
 }
 
 export const productService = {
@@ -21,14 +22,9 @@ export const productService = {
     }
   },
 
-  async addProduct(product: Omit<Product, 'id'>): Promise<Product> {
+  async addProduct(product: Omit<Product, 'id' | 'ordersCount'>): Promise<Product> {
     try {
-      const productData = {
-        ...product,
-        size: typeof product.size === 'string' ? product.size.split(',').map(s => s.trim()) : product.size,
-        color: typeof product.color === 'string' ? product.color.split(',').map(c => c.trim()) : product.color
-      }
-      const response = await axios.post(`${API_URL}/products`, productData)
+      const response = await axios.post(`${API_URL}/products`, { ...product, ordersCount: 0 })
       return response.data
     } catch (error) {
       console.error('Error adding product:', error)
@@ -38,12 +34,7 @@ export const productService = {
 
   async updateProduct(product: Product): Promise<Product> {
     try {
-      const productData = {
-        ...product,
-        size: typeof product.size === 'string' ? product.size.split(',').map(s => s.trim()) : product.size,
-        color: typeof product.color === 'string' ? product.color.split(',').map(c => c.trim()) : product.color
-      }
-      const response = await axios.put(`${API_URL}/products/${product.id}`, productData)
+      const response = await axios.put(`${API_URL}/products/${product.id}`, product)
       return response.data
     } catch (error) {
       console.error('Error updating product:', error)

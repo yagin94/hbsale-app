@@ -25,6 +25,9 @@
                             Color
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Orders
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions
                         </th>
                     </tr>
@@ -40,10 +43,13 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ product.size }}</div>
+                            <div class="text-sm text-gray-900">{{ product.size.join(', ') }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ product.color }}</div>
+                            <div class="text-sm text-gray-900">{{ product.color.join(', ') }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ product.ordersCount }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex space-x-2">
@@ -119,27 +125,53 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { productService, type Product } from '../services/productService'
+import { productService, type Product } from '../../services/productService'
+import { sheetsService, type Order } from '../../services/sheetsService'
 
 const products = ref<Product[]>([])
+const orders = ref<Order[]>([])
 const isModalOpen = ref(false)
 const isEditing = ref(false)
 const selectedProduct = ref<Product | null>(null)
+const isDataLoaded = ref(false)
 
 const formData = ref<Omit<Product, 'id'>>({
     productName: '',
     imagePath: '',
     size: [],
-    color: []
+    color: [],
+    ordersCount: 0
 })
 
 const loadProducts = async () => {
+    if (isDataLoaded.value) {
+        return
+    }
+
     try {
         products.value = await productService.getProducts()
+        await loadOrders()
+        updateProductOrderCounts()
+        isDataLoaded.value = true
     } catch (error) {
         console.error('Error loading products:', error)
         alert('Failed to load products. Please try again.')
     }
+}
+
+const loadOrders = async () => {
+    try {
+        orders.value = await sheetsService.getOrders()
+    } catch (error) {
+        console.error('Error loading orders:', error)
+    }
+}
+
+const updateProductOrderCounts = () => {
+    products.value = products.value.map(product => ({
+        ...product,
+        ordersCount: orders.value.filter(order => order.product === product.productName).length
+    }))
 }
 
 const openAddModal = () => {
@@ -148,7 +180,8 @@ const openAddModal = () => {
         productName: '',
         imagePath: '',
         size: [],
-        color: []
+        color: [],
+        ordersCount: 0
     }
     isModalOpen.value = true
 }
@@ -186,6 +219,7 @@ const handleSubmit = async () => {
         } else {
             await productService.addProduct(formData.value)
         }
+        isDataLoaded.value = false
         await loadProducts()
         closeModal()
     } catch (error) {
@@ -198,6 +232,7 @@ const deleteProduct = async (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
         try {
             await productService.deleteProduct(id)
+            isDataLoaded.value = false
             await loadProducts()
         } catch (error) {
             console.error('Error deleting product:', error)
@@ -206,7 +241,7 @@ const deleteProduct = async (id: string) => {
     }
 }
 
-onMounted(() => {
-    loadProducts()
+onMounted(async () => {
+    await loadProducts()
 })
 </script>

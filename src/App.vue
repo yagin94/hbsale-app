@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import OrderForm from './components/OrderManagerment/OrderForm.vue'
 import OrderTable from './components/OrderManagerment/OrderTable.vue'
-import ProductManagement from './components/ProductManagement.vue'
+import ProductManagement from './components/ProductManagement/ProductManagement.vue'
 
 const activeTab = ref('orders')
 </script>

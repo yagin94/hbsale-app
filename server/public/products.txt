@@ -12,5 +12,47 @@
       "vàng"
     ],
     "id": "bb0242fd-6864-4fed-a4cb-8bebabfeae9f"
+  },
+  {
+    "productName": "RỒNG XANH",
+    "imagePath": "/images/500222919_3984622485184791_215029338729999519_n.jpg",
+    "size": [
+      "66",
+      "73",
+      "80",
+      "90"
+    ],
+    "color": [
+      "XANH"
+    ],
+    "id": "2a5a6158-4878-4377-8f88-b37498c0588e"
+  },
+  {
+    "productName": "Stitch",
+    "imagePath": "/images/499603121_3983914905255549_5531720965735418853_n.jpg",
+    "size": [
+      "66",
+      "73",
+      "80",
+      "90"
+    ],
+    "color": [
+      "xanh dương"
+    ],
+    "id": "de31d069-c484-4357-8b1b-50c6ee942b82"
+  },
+  {
+    "productName": "Vịt Daisy",
+    "imagePath": "/images/497356647_3980453485601691_2913666552578067623_n.jpg",
+    "size": [
+      "66",
+      "73",
+      "80",
+      "90"
+    ],
+    "color": [
+      "tím"
+    ],
+    "id": "e71b91d2-bc20-48a3-bf86-ac19d924bab7"
   }
 ]

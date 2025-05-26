@@ -1,58 +1,33 @@
 <template>
-  <div
-    class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 transition hover:shadow-2xl"
-  >
+  <div class="p-8 bg-white/90 rounded-2xl shadow-xl border border-indigo-100 transition hover:shadow-2xl">
     <h2 class="text-2xl font-extrabold mb-6 text-indigo-700">Add new order</h2>
     <form @submit.prevent="submitOrder" class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-medium text-gray-700">Customer name</label>
-          <input
-            v-model="formData.customerName"
-            type="text"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <input v-model="formData.customerName" type="text" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Facebook Link</label>
-          <input
-            v-model="formData.facebookLink"
-            type="url"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <input v-model="formData.facebookLink" type="url" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Address</label>
-          <input
-            v-model="formData.address"
-            type="text"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <input v-model="formData.address" type="text" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Số Điện Thoại</label>
           <div class="relative">
-            <input
-              v-model="formData.phone"
-              type="text"
-              required
-              @input="handlePhoneInput"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
+            <input v-model="formData.phone" type="text" required @input="handlePhoneInput"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
             <!-- Phone suggestions dropdown -->
-            <div
-              v-if="showPhoneSuggestions && filteredUsers.length > 0"
-              class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto"
-            >
-              <div
-                v-for="user in filteredUsers"
-                :key="user.id"
-                @click="selectUser(user)"
-                class="px-4 py-2 hover:bg-indigo-50 cursor-pointer"
-              >
+            <div v-if="showPhoneSuggestions && filteredUsers.length > 0"
+              class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
+              <div v-for="user in filteredUsers" :key="user.id" @click="selectUser(user)"
+                class="px-4 py-2 hover:bg-indigo-50 cursor-pointer">
                 <div class="font-medium">{{ user.customerName }}</div>
                 <div class="text-sm text-gray-500">{{ user.phone }}</div>
               </div>
@@ -61,28 +36,23 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Product</label>
-          <select
-            v-model="selectedProduct"
-            @change="handleProductChange"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
+          <select v-model="formData.product" @change="handleProductChange" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a product</option>
-            <option v-for="product in products" :key="product.id" :value="product">
-              {{ product.productName }}
+            <option v-for="product in products" :key="product.id" :value="product.name">
+              {{ product.name }}
             </option>
           </select>
-          <div v-if="selectedProduct?.imagePath" class="mt-2 flex items-center justify-center">
-            <img :src="selectedProduct.imagePath" class="w-[64px] h-[64px] object-cover rounded" />
+          <div v-if="formData.product && products.find(p => p.name === formData.product)?.imagePath"
+            class="mt-2 flex items-center justify-center">
+            <img :src="products.find(p => p.name === formData.product)?.imagePath"
+              class="w-[64px] h-[64px] object-cover rounded" />
           </div>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Size</label>
-          <select
-            v-model="formData.size"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
+          <select v-model="formData.size" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a size</option>
             <option v-for="size in availableSizes" :key="size" :value="size">
               {{ size }}
@@ -91,11 +61,8 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Color</label>
-          <select
-            v-model="formData.color"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
+          <select v-model="formData.color" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a color</option>
             <option v-for="color in availableColors" :key="color" :value="color">
               {{ color }}
@@ -104,52 +71,32 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Selling price</label>
-          <input
-            v-model="formData.sellingPrice"
-            type="number"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <input v-model="formData.sellingPrice" type="number" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">Cost price</label>
-          <input
-            v-model="formData.costPrice"
-            type="number"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <input v-model="formData.costPrice" type="number" required
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
         </div>
       </div>
       <div class="flex items-center">
-        <input
-          v-model="formData.isFulfilled"
-          type="checkbox"
-          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-        />
+        <input v-model="formData.isFulfilled" type="checkbox"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
         <label class="ml-2 block text-sm text-gray-900">Fullfilled</label>
       </div>
       <div class="flex items-center">
-        <input
-          v-model="formData.isPaid"
-          type="checkbox"
-          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-        />
+        <input v-model="formData.isPaid" type="checkbox"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
         <label class="ml-2 block text-sm text-gray-900"> Paid </label>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Note</label>
-        <input
-          v-model="formData.note"
-          type="text"
-          required
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        />
+        <input v-model="formData.note" type="text" required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
       </div>
-      <button
-        type="submit"
-        class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition"
-      >
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-indigo-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold shadow hover:from-indigo-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition">
         Add Order
       </button>
     </form>
@@ -164,9 +111,9 @@ import { userService, type User } from '../../services/userService'
 
 interface OrderFormData {
   customerName: string
-  facebookLink: string
-  address: string
   phone: string
+  address: string
+  facebookLink: string
   product: string
   size: string
   color: string
@@ -180,9 +127,9 @@ interface OrderFormData {
 
 const initialFormData: OrderFormData = {
   customerName: '',
-  facebookLink: '',
-  address: '',
   phone: '',
+  address: '',
+  facebookLink: '',
   product: '',
   size: '',
   color: '',
@@ -191,7 +138,7 @@ const initialFormData: OrderFormData = {
   isFulfilled: false,
   isPaid: false,
   imagePath: '',
-  note: '',
+  note: ''
 }
 
 const formData = ref<OrderFormData>({ ...initialFormData })
@@ -227,12 +174,15 @@ const loadUsers = async () => {
 }
 
 const handleProductChange = () => {
-  if (selectedProduct.value) {
-    formData.value.product = selectedProduct.value.productName
-    formData.value.imagePath = selectedProduct.value.imagePath
-    // Reset size and color when product changes
+  const product = products.value.find(p => p.name === formData.value.product)
+  if (product) {
+    formData.value.size = product.size[0] || ''
+    formData.value.color = product.color[0] || ''
+    formData.value.imagePath = product.imagePath
+  } else {
     formData.value.size = ''
     formData.value.color = ''
+    formData.value.imagePath = ''
   }
 }
 
@@ -274,6 +224,17 @@ const submitOrder = async () => {
 
     // Create the order
     await sheetsService.addOrder(formData.value)
+
+    // Update product order count
+    const products = await productService.getProducts()
+    const product = products.find(p => p.name === formData.value.product)
+    if (product) {
+      await productService.updateProduct({
+        ...product,
+        ordersCount: product.ordersCount + 1
+      })
+    }
+
     resetForm()
     alert('Order created successfully!')
   } catch (error) {
