@@ -11,7 +11,9 @@
     "color": [
       "vàng"
     ],
-    "id": "bb0242fd-6864-4fed-a4cb-8bebabfeae9f"
+    "id": "bb0242fd-6864-4fed-a4cb-8bebabfeae9f",
+    "cost": 177000,
+    "sell": 239000
   },
   {
     "productName": "RỒNG XANH",
@@ -25,7 +27,9 @@
     "color": [
       "XANH"
     ],
-    "id": "2a5a6158-4878-4377-8f88-b37498c0588e"
+    "id": "2a5a6158-4878-4377-8f88-b37498c0588e",
+    "cost": 195000,
+    "sell": 275000
   },
   {
     "productName": "Stitch",
@@ -39,7 +43,9 @@
     "color": [
       "xanh dương"
     ],
-    "id": "de31d069-c484-4357-8b1b-50c6ee942b82"
+    "id": "de31d069-c484-4357-8b1b-50c6ee942b82",
+    "cost": 155000,
+    "sell": 219000
   },
   {
     "productName": "Vịt Daisy",
@@ -53,6 +59,8 @@
     "color": [
       "tím"
     ],
-    "id": "e71b91d2-bc20-48a3-bf86-ac19d924bab7"
+    "id": "e71b91d2-bc20-48a3-bf86-ac19d924bab7",
+    "cost": 155000,
+    "sell": 229000
   }
 ]

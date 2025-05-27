@@ -9,6 +9,8 @@ export interface Product {
   color: string[]
   imagePath: string
   ordersCount: number
+  cost: number,
+  sell: number
 }
 
 export const productService = {

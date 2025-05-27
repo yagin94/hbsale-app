@@ -8,7 +8,6 @@ import { useOrders } from './queries/useOrders'
 const activeTab = ref('orders')
 
 const { orders, isLoading: ordersLoading, addOrder, updateOrderStatus, updateOrderPaid, updateOrder, deleteOrder } = useOrders()
-debugger;
 </script>
 
 <template>
@@ -53,14 +52,8 @@ debugger;
               <OrderForm :addOrder="addOrder" />
             </div>
             <div class="w-3/4">
-              <OrderTable 
-                :orders="orders" 
-                :isLoading="ordersLoading"
-                :updateOrderStatus="updateOrderStatus"
-                :updateOrderPaid="updateOrderPaid"
-                :updateOrder="updateOrder"
-                :deleteOrder="deleteOrder"
-              />
+              <OrderTable :orders="orders" :isLoading="ordersLoading" :updateOrderStatus="updateOrderStatus"
+                :updateOrderPaid="updateOrderPaid" :updateOrder="updateOrder" :deleteOrder="deleteOrder" />
             </div>
           </div>
           <div v-else-if="activeTab === 'products'">

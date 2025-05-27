@@ -23,7 +23,6 @@ export interface Order {
 export const sheetsService = {
   async getOrders(): Promise<Order[]> {
     try {
-      debugger;
       const response = await axios.get(`${API_URL}/orders`)
       return response.data
     } catch (error) {

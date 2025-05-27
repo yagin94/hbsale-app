@@ -39,13 +39,13 @@
           <select v-model="formData.product" @change="handleProductChange" required
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <option value="">Select a product</option>
-            <option v-for="product in products" :key="product.id" :value="product.name">
-              {{ product.name }}
+            <option v-for="product in products" :key="product.id" :value="product.productName">
+              {{ product.productName }}
             </option>
           </select>
-          <div v-if="formData.product && products.find(p => p.name === formData.product)?.imagePath"
+          <div v-if="formData.product && products.find(p => p.productName === formData.product)?.imagePath"
             class="mt-2 flex items-center justify-center">
-            <img :src="products.find(p => p.name === formData.product)?.imagePath"
+            <img :src="products.find(p => p.productName === formData.product)?.imagePath"
               class="w-[64px] h-[64px] object-cover rounded" />
           </div>
         </div>
@@ -174,15 +174,19 @@ const loadUsers = async () => {
 }
 
 const handleProductChange = () => {
-  const product = products.value.find(p => p.name === formData.value.product)
-  if (product) {
-    formData.value.size = product.size[0] || ''
-    formData.value.color = product.color[0] || ''
-    formData.value.imagePath = product.imagePath
+  selectedProduct.value = products.value.find(p => p.productName === formData.value.product) || null
+  if (selectedProduct.value) {
+    formData.value.size = selectedProduct.value.size[0] || ''
+    formData.value.color = selectedProduct.value.color[0] || ''
+    formData.value.imagePath = selectedProduct.value.imagePath
+    formData.value.costPrice = selectedProduct.value.cost
+    formData.value.sellingPrice = selectedProduct.value.sell
   } else {
     formData.value.size = ''
     formData.value.color = ''
     formData.value.imagePath = ''
+    formData.value.costPrice = 0
+    formData.value.sellingPrice = 0
   }
 }
 
@@ -227,7 +231,7 @@ const submitOrder = async () => {
 
     // Update product order count
     const products = await productService.getProducts()
-    const product = products.find(p => p.name === formData.value.product)
+    const product = products.find(p => p.productName === formData.value.product)
     if (product) {
       await productService.updateProduct({
         ...product,
