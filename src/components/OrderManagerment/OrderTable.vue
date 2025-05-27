@@ -329,7 +329,7 @@
               <input
                 type="checkbox"
                 v-model="order.isFulfilled"
-                @change="updateOrderStatus(order)"
+                @change="handleUpdateOrderStatus(order)"
                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
             </td>
@@ -337,7 +337,7 @@
               <input
                 type="checkbox"
                 v-model="order.isPaid"
-                @change="updateOrderPaid(order)"
+                @change="handleUpdateOrderPaid(order)"
                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
             </td>
@@ -356,7 +356,7 @@
                   Edit
                 </button>
                 <button
-                  @click="deleteOrder(order)"
+                  @click="handleDeleteOrder(order)"
                   class="text-red-600 hover:text-red-900 focus:outline-none focus:underline"
                 >
                   Delete
@@ -461,60 +461,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import EditOrderModal from './EditOrderModal.vue'
-import { sheetsService } from '../../services/sheetsService'
 import type { Order } from '../../services/sheetsService'
 
-const orders = ref<Order[]>([])
-const ordersClone = ref<Order[]>([])
+const props = defineProps<{
+  orders: Order[]
+  isLoading: boolean
+  updateOrderStatus: (params: { orderId: string; isFulfilled: boolean }) => Promise<void>
+  updateOrderPaid: (params: { orderId: string; isPaid: boolean }) => Promise<void>
+  updateOrder: (order: Order) => Promise<void>
+  deleteOrder: (orderId: string) => Promise<void>
+}>()
+
 const searchQuery = ref('')
 const isEditModalOpen = ref(false)
 const selectedOrder = ref<Order | null>(null)
 const sortColumn = ref<string | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('asc')
-const isLoading = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = 5
 
-const fetchOrders = async () => {
-  isLoading.value = true
-  try {
-    orders.value = await sheetsService.getOrders()
-    ordersClone.value = await sheetsService.getOrders()
-  } catch (error) {
-    console.error('Error fetching orders:', error)
-    alert('Failed to fetch orders. Please try again.')
-  } finally {
-    isLoading.value = false
-  }
-}
-
 const filteredOrders = computed(() => {
-  if (!searchQuery.value) return orders.value
-  return orders.value.filter((order) =>
+  if (!searchQuery.value) return props.orders
+  return props.orders.filter((order) =>
     order.customerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 
 const totalRevenue = computed(() => {
-  return orders.value.reduce((sum, order) => sum + Number(order.sellingPrice), 0)
+  return props.orders.reduce((sum, order) => sum + Number(order.sellingPrice), 0)
 })
 
 const totalProfit = computed(() => {
-  return orders.value.reduce((sum, order) => sum + (order.sellingPrice - order.costPrice), 0)
+  return props.orders.reduce((sum, order) => sum + (order.sellingPrice - order.costPrice), 0)
 })
-
-// const sortedOrders = computed(() => {
-//   if (!sortColumn.value) return filteredOrders.value
-//   return [...filteredOrders.value].sort((a, b) => {
-//     const aValue = a[sortColumn.value as keyof Order] ?? ''
-//     const bValue = b[sortColumn.value as keyof Order] ?? ''
-//     if (aValue < bValue) return sortDirection.value === 'asc' ? -1 : 1
-//     if (aValue > bValue) return sortDirection.value === 'asc' ? 1 : -1
-//     return 0
-//   })
-// })
 
 const calculateProfit = (order: Order) => {
   return order.sellingPrice - order.costPrice
@@ -529,27 +510,21 @@ const getProfitClass = (order: Order) => {
   }
 }
 
-const updateOrderStatus = async (order: Order) => {
-  isLoading.value = true
+const handleUpdateOrderStatus = async (order: Order) => {
   try {
-    await sheetsService.updateOrderStatus(order.id, order.isFulfilled)
+    await props.updateOrderStatus({ orderId: order.id, isFulfilled: order.isFulfilled })
   } catch (error) {
-    console.error('Error updating order:', error)
+    console.error('Error updating order status:', error)
     alert('Failed to update order status. Please try again.')
-  } finally {
-    isLoading.value = false
   }
 }
 
-const updateOrderPaid = async (order: Order) => {
-  isLoading.value = true
+const handleUpdateOrderPaid = async (order: Order) => {
   try {
-    await sheetsService.updateOrderPaid(order.id, order.isFulfilled)
+    await props.updateOrderPaid({ orderId: order.id, isPaid: order.isPaid })
   } catch (error) {
-    console.error('Error updating order:', error)
-    alert('Failed to update order paid. Please try again.')
-  } finally {
-    isLoading.value = false
+    console.error('Error updating order paid status:', error)
+    alert('Failed to update order paid status. Please try again.')
   }
 }
 
@@ -560,19 +535,13 @@ const formatCurrency = (value: number) => {
   }).format(value)
 }
 
-const deleteOrder = async (order: Order) => {
+const handleDeleteOrder = async (order: Order) => {
   if (!confirm('Are you sure you want to delete this order?')) return
-
-  isLoading.value = true
   try {
-    await sheetsService.deleteOrder(order.id)
-    await fetchOrders()
-    alert('Order deleted successfully!')
+    await props.deleteOrder(order.id)
   } catch (error) {
     console.error('Error deleting order:', error)
     alert('Failed to delete order. Please try again.')
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -587,17 +556,12 @@ const closeEditModal = () => {
 }
 
 const handleEditSave = async (updatedOrder: Order) => {
-  isLoading.value = true
   try {
-    await sheetsService.updateOrder(updatedOrder)
-    await fetchOrders()
+    await props.updateOrder(updatedOrder)
     closeEditModal()
-    alert('Order updated successfully!')
   } catch (error) {
     console.error('Error updating order:', error)
     alert('Failed to update order. Please try again.')
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -606,26 +570,13 @@ const handleSort = (column: string) => {
     if (sortDirection.value === 'asc') {
       sortDirection.value = 'desc'
     } else {
-      // Reset sorting if clicking the same column again
       sortColumn.value = null
       sortDirection.value = 'asc'
-      // Refetch or reset orders to original order
-      orders.value = [...ordersClone.value]
       return
     }
   } else {
     sortColumn.value = column
     sortDirection.value = 'asc'
-  }
-  // Add logic sort here
-  if (sortColumn.value) {
-    orders.value = [...orders.value].sort((a, b) => {
-      const aValue = a[sortColumn.value as keyof Order] ?? ''
-      const bValue = b[sortColumn.value as keyof Order] ?? ''
-      if (aValue < bValue) return sortDirection.value === 'asc' ? -1 : 1
-      if (aValue > bValue) return sortDirection.value === 'asc' ? 1 : -1
-      return 0
-    })
   }
 }
 
@@ -638,7 +589,7 @@ const paginatedOrders = computed(() => {
 const totalPages = computed(() => Math.ceil(filteredOrders.value.length / itemsPerPage))
 
 const paginationRange = computed(() => {
-  const delta = 3 // Number of pages to show before and after current page
+  const delta = 3
   const range: number[] = []
   const rangeWithDots: (number | string)[] = []
   let l: number | undefined
@@ -673,8 +624,4 @@ const goToPage = (page: number) => {
     currentPage.value = page
   }
 }
-
-onMounted(() => {
-  fetchOrders()
-})
 </script>

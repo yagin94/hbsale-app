@@ -3,8 +3,12 @@ import { ref } from 'vue'
 import OrderForm from './components/OrderManagerment/OrderForm.vue'
 import OrderTable from './components/OrderManagerment/OrderTable.vue'
 import ProductManagement from './components/ProductManagement/ProductManagement.vue'
+import { useOrders } from './queries/useOrders'
 
 const activeTab = ref('orders')
+
+const { orders, isLoading: ordersLoading, addOrder, updateOrderStatus, updateOrderPaid, updateOrder, deleteOrder } = useOrders()
+debugger;
 </script>
 
 <template>
@@ -46,14 +50,21 @@ const activeTab = ref('orders')
           <!-- Tab Content -->
           <div v-if="activeTab === 'orders'" class="flex flex-row space-x-8">
             <div class="w-1/4">
-              <OrderForm />
+              <OrderForm :addOrder="addOrder" />
             </div>
             <div class="w-3/4">
-              <OrderTable />
+              <OrderTable 
+                :orders="orders" 
+                :isLoading="ordersLoading"
+                :updateOrderStatus="updateOrderStatus"
+                :updateOrderPaid="updateOrderPaid"
+                :updateOrder="updateOrder"
+                :deleteOrder="deleteOrder"
+              />
             </div>
           </div>
           <div v-else-if="activeTab === 'products'">
-            <ProductManagement />
+            <ProductManagement :orders="orders" />
           </div>
         </div>
       </div>
