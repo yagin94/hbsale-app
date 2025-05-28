@@ -149,6 +149,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { productService, type Product } from '../../services/productService'
+import type { Order } from '@/services/sheetsService';
 
 const props = defineProps<{
   orders: Order[]

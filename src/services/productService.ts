@@ -26,7 +26,16 @@ export const productService = {
 
   async addProduct(product: Omit<Product, 'id' | 'ordersCount'>): Promise<Product> {
     try {
-      const response = await axios.post(`${API_URL}/products`, { ...product, ordersCount: 0 })
+      const productData = {
+        ...product,
+        size: typeof product.size === 'string'
+          ? (product.size as string).split(',').map(s => s.trim())
+          : product.size,
+        color: typeof product.color === 'string'
+          ? (product.color as string).split(',').map(c => c.trim())
+          : product.color
+      }
+      const response = await axios.post(`${API_URL}/products`, { ...productData, ordersCount: 0 })
       return response.data
     } catch (error) {
       console.error('Error adding product:', error)
@@ -36,7 +45,16 @@ export const productService = {
 
   async updateProduct(product: Product): Promise<Product> {
     try {
-      const response = await axios.put(`${API_URL}/products/${product.id}`, product)
+      const productData = {
+        ...product,
+        size: typeof product.size === 'string'
+          ? (product.size as string).split(',').map(s => s.trim())
+          : product.size,
+        color: typeof product.color === 'string'
+          ? (product.color as string).split(',').map(c => c.trim())
+          : product.color
+      }
+      const response = await axios.put(`${API_URL}/products/${product.id}`, productData)
       return response.data
     } catch (error) {
       console.error('Error updating product:', error)
