@@ -481,20 +481,21 @@ const sortColumn = ref<string | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('asc')
 const currentPage = ref(1)
 const itemsPerPage = 5
+const sortedOrder = ref<Order[]>(props.orders)
 
 const filteredOrders = computed(() => {
-  if (!searchQuery.value) return props.orders
-  return props.orders.filter((order) =>
+  if (!searchQuery.value) return sortedOrder.value
+  return sortedOrder.value.filter((order) =>
     order.customerName.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 
 const totalRevenue = computed(() => {
-  return props.orders.reduce((sum, order) => sum + Number(order.sellingPrice), 0)
+  return sortedOrder.value.reduce((sum, order) => sum + Number(order.sellingPrice), 0)
 })
 
 const totalProfit = computed(() => {
-  return props.orders.reduce((sum, order) => sum + (order.sellingPrice - order.costPrice), 0)
+  return sortedOrder.value.reduce((sum, order) => sum + (order.sellingPrice - order.costPrice), 0)
 })
 
 const calculateProfit = (order: Order) => {
@@ -577,6 +578,16 @@ const handleSort = (column: string) => {
   } else {
     sortColumn.value = column
     sortDirection.value = 'asc'
+  }
+  // Add logic sort here
+  if (sortColumn.value) {
+    sortedOrder.value = [...sortedOrder.value].sort((a, b) => {
+      const aValue = a[sortColumn.value as keyof Order] ?? ''
+      const bValue = b[sortColumn.value as keyof Order] ?? ''
+      if (aValue < bValue) return sortDirection.value === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortDirection.value === 'asc' ? 1 : -1
+      return 0
+    })
   }
 }
 
