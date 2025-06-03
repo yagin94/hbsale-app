@@ -5,6 +5,7 @@ import OrderTable from './components/OrderManagerment/OrderTable.vue'
 import ProductManagement from './components/ProductManagement/ProductManagement.vue'
 import { useOrders } from './queries/useOrders'
 
+
 const activeTab = ref('orders')
 
 const { orders, isLoading: ordersLoading, addOrder, updateOrderStatus, updateOrderPaid, updateOrder, deleteOrder } = useOrders()

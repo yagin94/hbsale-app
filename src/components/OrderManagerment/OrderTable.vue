@@ -65,309 +65,6 @@
       </div>
     </div>
 
-    <div class="overflow-x-auto">
-      <table
-        class="min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden shadow-md bg-white"
-      >
-        <thead class="bg-indigo-50">
-          <tr>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'customerName' }"
-              @click="handleSort('customerName')"
-            >
-              <div class="flex items-center">
-                Customer Name
-                <span v-if="sortColumn === 'customerName'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'facebookLink' }"
-              @click="handleSort('facebookLink')"
-            >
-              <div class="flex items-center">
-                Facebook Link
-                <span v-if="sortColumn === 'facebookLink'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'address' }"
-              @click="handleSort('address')"
-            >
-              <div class="flex items-center">
-                Address
-                <span v-if="sortColumn === 'address'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'phone' }"
-              @click="handleSort('phone')"
-            >
-              <div class="flex items-center">
-                Phone
-                <span v-if="sortColumn === 'phone'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'product' }"
-              @click="handleSort('product')"
-            >
-              <div class="flex items-center">
-                Product
-                <span v-if="sortColumn === 'product'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'imagePath' }"
-              @click="handleSort('imagePath')"
-            >
-              <div class="flex items-center">
-                Image
-                <span v-if="sortColumn === 'imagePath'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'size' }"
-              @click="handleSort('size')"
-            >
-              <div class="flex items-center">
-                Size
-                <span v-if="sortColumn === 'size'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'color' }"
-              @click="handleSort('color')"
-            >
-              <div class="flex items-center">
-                Color
-                <span v-if="sortColumn === 'color'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'sellingPrice' }"
-              @click="handleSort('sellingPrice')"
-            >
-              <div class="flex items-center">
-                Selling Price
-                <span v-if="sortColumn === 'sellingPrice'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'costPrice' }"
-              @click="handleSort('costPrice')"
-            >
-              <div class="flex items-center">
-                Cost Price
-                <span v-if="sortColumn === 'costPrice'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'profit' }"
-              @click="handleSort('profit')"
-            >
-              <div class="flex items-center">
-                Profit
-                <span v-if="sortColumn === 'profit'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'isFulfilled' }"
-              @click="handleSort('isFulfilled')"
-            >
-              <div class="flex items-center">
-                Status
-                <span v-if="sortColumn === 'isFulfilled'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'isPaid' }"
-              @click="handleSort('isPaid')"
-            >
-              <div class="flex items-center">
-                Paid
-                <span v-if="sortColumn === 'isPaid'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'createdAt' }"
-              @click="handleSort('createdAt')"
-            >
-              <div class="flex items-center">
-                Created At
-                <span v-if="sortColumn === 'createdAt'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-50"
-              :class="{ 'bg-indigo-100': sortColumn === 'note' }"
-              @click="handleSort('note')"
-            >
-              <div class="flex items-center">
-                Note
-                <span v-if="sortColumn === 'note'" class="ml-1">
-                  {{ sortDirection === 'asc' ? '↑' : '↓' }}
-                </span>
-              </div>
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr
-            v-for="order in paginatedOrders"
-            :key="order.id"
-            class="hover:bg-indigo-50 transition"
-          >
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ order.customerName }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">
-                <a
-                  class="redirect-fb"
-                  :href="order.facebookLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  >{{ order.facebookLink }}</a
-                >
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.address }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.phone }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.product }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div v-if="order.imagePath" class="mt-2 flex items-center justify-center">
-                <img :src="order.imagePath" class="w-[64px] h-[64px] object-cover rounded" />
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.size }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.color }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ formatCurrency(order.sellingPrice) }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ formatCurrency(order.costPrice) }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm" :class="getProfitClass(order)">
-                {{ formatCurrency(calculateProfit(order)) }}
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input
-                type="checkbox"
-                v-model="order.isFulfilled"
-                @change="handleUpdateOrderStatus(order)"
-                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input
-                type="checkbox"
-                v-model="order.isPaid"
-                @change="handleUpdateOrderPaid(order)"
-                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.createdAt }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-900">{{ order.note }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex space-x-2">
-                <button
-                  @click="openEditModal(order)"
-                  class="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline"
-                >
-                  Edit
-                </button>
-                <button
-                  @click="handleDeleteOrder(order)"
-                  class="text-red-600 hover:text-red-900 focus:outline-none focus:underline"
-                >
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div
       class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
     >
@@ -450,7 +147,9 @@
         </div>
       </div>
     </div>
-
+    <div class="ag-theme-alpine" style="height: 500px; width: 100%">
+      <ag-grid-vue :rowData="rowData" :columnDefs="columnDefs" style="height: 500px"> </ag-grid-vue>
+    </div>
     <EditOrderModal
       :is-open="isEditModalOpen"
       :order="selectedOrder"
@@ -464,6 +163,13 @@
 import { ref, computed } from 'vue'
 import EditOrderModal from './EditOrderModal.vue'
 import type { Order } from '../../services/sheetsService'
+import { AgGridVue } from 'ag-grid-vue3'
+import type { ColDef } from 'ag-grid-community'
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
+import ActionCellRenderer from '../sub-components/ActionCellRenderer.vue'
+import CheckboxCellRenderer from '../sub-components/CheckboxCellRenderer.vue'
+
+ModuleRegistry.registerModules([AllCommunityModule])
 
 const props = defineProps<{
   orders: Order[]
@@ -482,6 +188,98 @@ const sortDirection = ref<'asc' | 'desc'>('asc')
 const currentPage = ref(1)
 const itemsPerPage = 5
 const sortedOrder = ref<Order[]>(props.orders)
+// Row Data: The data to be displayed.
+const rowData = ref(props.orders)
+
+// Column Definitions: Defines the columns to be displayed.
+const columnDefs = ref<ColDef[]>([
+  { headerName: 'Customer Name', field: 'customerName', sortable: true, filter: true },
+  {
+    headerName: 'Facebook Link',
+    field: 'facebookLink',
+    sortable: true,
+    filter: true,
+    cellRenderer: (params: any) => `<a href="${params.value}" target="_blank">${params.value}</a>`,
+  },
+  { headerName: 'Address', field: 'address', sortable: true, filter: true },
+  { headerName: 'Phone', field: 'phone', sortable: true, filter: true },
+  { headerName: 'Product', field: 'product', sortable: true, filter: true },
+  {
+    headerName: 'Image',
+    field: 'imagePath',
+    cellRenderer: (params: any) =>
+      params.value
+        ? `<img src="${params.value}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;" />`
+        : '',
+    sortable: false,
+    filter: false,
+  },
+  { headerName: 'Size', field: 'size', sortable: true, filter: true },
+  { headerName: 'Color', field: 'color', sortable: true, filter: true },
+  {
+    headerName: 'Selling Price',
+    field: 'sellingPrice',
+    sortable: true,
+    filter: true,
+    valueFormatter: (params: any) => formatCurrency(params.value),
+  },
+  {
+    headerName: 'Cost Price',
+    field: 'costPrice',
+    sortable: true,
+    filter: true,
+    valueFormatter: (params: any) => formatCurrency(params.value),
+  },
+  {
+    headerName: 'Profit',
+    field: 'profit',
+    valueGetter: (params: any) => params.data.sellingPrice - params.data.costPrice,
+    valueFormatter: (params: any) => formatCurrency(params.value),
+    sortable: true,
+    filter: true,
+  },
+  {
+    headerName: 'Fulfilled',
+    field: 'isFulfilled',
+    sortable: true,
+    filter: true,
+    cellRenderer: CheckboxCellRenderer,
+    cellRendererParams: {
+      onToggleStatus: (param: any) => {
+        handleUpdateOrderStatus(param)
+      },
+    },
+  },
+  {
+    headerName: 'Paid',
+    field: 'isPaid',
+    sortable: true,
+    filter: true,
+    cellRenderer: CheckboxCellRenderer,
+    cellRendererParams: {
+      onTogglePaid: (param: any) => {
+        handleUpdateOrderPaid(param)
+      },
+    },
+  },
+  { headerName: 'Created At', field: 'createdAt', sortable: true, filter: true },
+  { headerName: 'Note', field: 'note', sortable: true, filter: true },
+  {
+    headerName: 'Actions',
+    field: 'actions',
+    cellRenderer: ActionCellRenderer,
+    cellRendererParams: {
+      onEdit: (data: any) => {
+        openEditModal(data)
+      },
+      onDelete: (data: any) => {
+        console.log('Delete', data)
+      },
+    },
+    sortable: false,
+    filter: false,
+  },
+])
 
 const filteredOrders = computed(() => {
   if (!searchQuery.value) return sortedOrder.value
